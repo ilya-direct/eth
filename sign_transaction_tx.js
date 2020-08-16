@@ -21,6 +21,10 @@ const properties = [
         validator: /^[\d]+$/,
     },
     {
+        name: 'chain',
+        validator: /^[\w]+$/,
+    },
+    {
         name: 'privateKey',
         hidden: true,
     }
@@ -33,6 +37,7 @@ prompt.get(properties, function (err, result) {
     let toAddress = result.toAddress;
     let weiSendValue = result.amountMiliEther * 10**15; // wei -> 10^(-18) ETH
     let Gwei = result.gwei;  //  Gwei * 21 * 10 ^(-6) ETH
+    let chain = result.chain; // ropsten - 3,  mainnet - 1
 
     let privateKey = result.privateKey;
 
@@ -49,7 +54,9 @@ prompt.get(properties, function (err, result) {
     let commision = (txParams.gasPrice * txParams.gasLimit) * (10 ** (-18));
     console.log('Tnx Fee: ' + commision + ' ETH');
 
-    const tx = new EthereumTx(txParams, { chain: 'ropsten', hardfork: 'petersburg' });
+    const tx = new EthereumTx(txParams, {
+        chain: chain, // (ropsten или mainnet)
+    });
 
     tx.sign(Buffer.from(privateKey, 'hex'));
 
